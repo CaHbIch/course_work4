@@ -10,9 +10,9 @@ class MoviesService:
         self.dao = dao
 
     def get_item(self, pk: int) -> Movie:
-        if genre := self.dao.get_by_id(pk):
-            return genre
+        if movie := self.dao.get_by_id(pk):
+            return movie
         raise ItemNotFound(f'Movie with pk={pk} not exists.')
 
-    def get_all(self, page: Optional[int] = None) -> list[Movie]:
-        return self.dao.get_all(page=page)
+    def get_all(self, status: Optional[str] = None, page: Optional[int] = None) -> list[Movie]:
+        return self.dao.get_all(page=page, status=status)

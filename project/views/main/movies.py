@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource
 
 from project.container import movie_service
