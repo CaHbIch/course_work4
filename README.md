@@ -45,6 +45,6 @@ python load_fixture.py
 
 ## Запуск тестов
 ```shell
-pytest .
+pytest
 ```
 
