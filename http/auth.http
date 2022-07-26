@@ -10,12 +10,13 @@ Authorization:
 }
 
 ###
-PUT http://127.0.0.1:25000/auth/
+PUT http://127.0.0.1:25000/auth/login/
 Content-Type: application/json
 Authorization: JWT_token
 
 {
-  "refresh_token": "JWT_token"
+  "email": "123",
+  "password": "123"
 }
 
 ###
