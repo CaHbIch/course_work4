@@ -19,3 +19,10 @@ movie: Model = api.model('Фильм', {
     'year': fields.Integer(required=True, max_length=100, example='Год'),
     'rating': fields.Float(required=True, max_length=100, example='Рейтинг'),
 })
+user: Model = api.model('Пользователь', {
+    'id': fields.Integer(required=True, example=1),
+    'email': fields.String(required=True, max_length=100, example='Логин'),
+    'name': fields.String(required=True, max_length=100, example='Имя'),
+    'surname': fields.String(required=True, max_length=100, example='Фамилия'),
+    'favorite_genre': fields.String(required=True, max_length=100, example='Любимый жанр'),
+})

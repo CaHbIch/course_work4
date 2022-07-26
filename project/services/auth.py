@@ -10,6 +10,7 @@ from project.tools.security import compare_passwords
 SECRET_KEY = BaseConfig.SECRET_KEY
 ALGORITM = BaseConfig.ALGORITM
 
+
 class AuthService:
     def __init__(self, user_service: UsersService):
         self.user_service = user_service
@@ -17,7 +18,7 @@ class AuthService:
     def generate_tokens(self, email, password, is_refresh=False):
         user = self.user_service.get_user_by_email(email)
 
-        if user is None:
+        if not user:
             abort(401, "Неверный email или пароль")
 
         if not is_refresh:
@@ -43,14 +44,11 @@ class AuthService:
         return {"access_token": access_token, "refresh_token": refresh_token}
 
     def approve_refresf_token(self, refresh_token):
-        data = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITM])
-        email = data['email']
+        data = jwt.decode(jwt=refresh_token, key=SECRET_KEY, algorithms=ALGORITM)
+        email = data["email"]
+
         user = self.user_service.get_user_by_email(email)
 
         if not user:
-            return False
-        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
-        expired = data['exp']
-        if now > expired:
-            return False
-        return self.generate_tokens(email, user.password, is_refresh=True)
+            abort(401, "Нет такого пользователя")
+        return self.generate_tokens(user.email, user.password, is_refresh=True)

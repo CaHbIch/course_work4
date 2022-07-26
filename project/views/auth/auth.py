@@ -1,4 +1,4 @@
-from flask import request, flash
+from flask import request
 from flask_restx import Namespace, Resource
 
 from project.container import auth_service, user_service

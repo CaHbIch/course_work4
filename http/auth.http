@@ -5,8 +5,8 @@ Content-Type: application/json
 Authorization: Bearer JWT_token
 
 {
-  "email": "444",
-  "password": "444"
+  "email": "2",
+  "password": "2"
 }
 ###
 

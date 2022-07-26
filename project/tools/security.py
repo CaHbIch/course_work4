@@ -1,11 +1,10 @@
 import base64
 import hashlib
 import hmac
+from typing import Union
 
 import jwt
-from flask import current_app, abort
-
-from project.tools.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
+from flask import current_app, abort, request
 
 
 def __generate_password_digest(password: str) -> bytes:
@@ -21,16 +20,17 @@ def generate_password_hash(password: str) -> str:
     return base64.b64encode(__generate_password_digest(password)).decode('utf-8')
 
 
-def compare_passwords(password_hash, other_password) -> bool:
-    """ Проверка пароля из request, пароля в БД """
+def compare_passwords(hash_user: Union[str, bytes], input_password: str):
     return hmac.compare_digest(
-        base64.b64decode(password_hash),
+        base64.b64decode(hash_user),
         hashlib.pbkdf2_hmac(
             'sha256',
-            other_password.encode('utf-8'),
-            PWD_HASH_SALT,
-            PWD_HASH_ITERATIONS)
+            input_password.encode('utf-8'),
+            salt=current_app.config["PWD_HASH_SALT"],
+            iterations=current_app.config["PWD_HASH_ITERATIONS"],
+        )
     )
+
 
 def decode_token(token: str):
     decoded_token = {}
@@ -42,4 +42,21 @@ def decode_token(token: str):
             )
     except Exception:
         abort(401)
-    return
+    return decoded_token
+
+
+def auth_required(func):
+    def wrapper(*args, **kwargs):
+        if 'Authorization' not in request.headers:
+            abort(401)
+
+        data = request.headers['Authorization']
+        token = data.split("Bearer ")[-1]
+        try:
+            jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=current_app.config["ALGORITM"])
+        except Exception as e:
+            print("JWT Decode Exception", e)
+            abort(401)
+        return func(*args, **kwargs)
+
+    return wrapper
