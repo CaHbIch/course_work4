@@ -3,10 +3,12 @@ import datetime
 import jwt
 from flask_restx import abort
 
+from project.config import BaseConfig
 from project.services.user import UsersService
-from project.tools.constants import SECRET_KEY, ALGORITM
 from project.tools.security import compare_passwords
 
+SECRET_KEY = BaseConfig.SECRET_KEY
+ALGORITM = BaseConfig.ALGORITM
 
 class AuthService:
     def __init__(self, user_service: UsersService):
@@ -16,13 +18,16 @@ class AuthService:
         user = self.user_service.get_user_by_email(email)
 
         if user is None:
-            abort(401, "Нет такого  Email")
+            abort(401, "Неверный email или пароль")
 
         if not is_refresh:
             if not compare_passwords(user.password, password):
-                abort(401, "Нет такого пароля")
+                return abort(401, "Нет такого пароля")
 
-        data = {"id": user.id, "email": user.email}
+        data = {
+            "email": user.email,
+            "id": user.id
+        }
 
         # access token on 30 min
         min30 = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)

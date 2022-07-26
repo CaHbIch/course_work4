@@ -15,9 +15,8 @@ class AuthView(Resource):
         return "", 201
 
 
-
 @api.route('/login/')
-class AuthLogin(Resource):
+class AuthView(Resource):
     def post(self):
         """Авторизация пользователя"""
         req_json = request.json
@@ -31,9 +30,8 @@ class AuthLogin(Resource):
         else:
             return "Ошибка в запросе", 400
 
-
     def put(self):
         """Обновления Аутентификации пользователя."""
         req_json = request.json
         token = req_json.get("refresh_token")
-        return auth_service.approve_refresh_token(token), 201
+        return auth_service.approve_refresf_token(token), 201

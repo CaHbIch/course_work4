@@ -2,7 +2,8 @@ import base64
 import hashlib
 import hmac
 
-from flask import current_app
+import jwt
+from flask import current_app, abort
 
 from project.tools.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 
@@ -30,3 +31,15 @@ def compare_passwords(password_hash, other_password) -> bool:
             PWD_HASH_SALT,
             PWD_HASH_ITERATIONS)
     )
+
+def decode_token(token: str):
+    decoded_token = {}
+    try:
+        decoded_token = jwt.decode(
+            jwt=token,
+            key=current_app.config["SECRET_KEY"],
+            algorithms=current_app.config["ALGORITM"]
+            )
+    except Exception:
+        abort(401)
+    return
