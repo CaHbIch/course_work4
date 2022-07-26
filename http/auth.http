@@ -1,0 +1,21 @@
+###
+
+POST http://127.0.0.1:25000/auth/login/
+Content-Type: application/json
+Authorization:
+
+{
+  "email": "123",
+  "password": "123"
+}
+
+###
+PUT http://127.0.0.1:25000/auth/
+Content-Type: application/json
+Authorization: JWT_token
+
+{
+  "refresh_token": "JWT_token"
+}
+
+###

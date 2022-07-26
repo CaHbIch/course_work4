@@ -14,7 +14,7 @@ pip install -r requirements.dev.txt
 ```shell
 export FLASK_APP=run.py
 export FLASK_ENV='development'
-flask run
+flask run --port=25000 
 ```
 
 ### CMD (Windows)
@@ -31,7 +31,7 @@ $env:FLASK_ENV = "development"
 flask run --port=25000 
 ```
 
-
+### ПОСЛЕ ЗАПУСКА ПРОЕКТА ЗАПУСТИТЬ ПУНКТ 3.
 ### 3) - Создание моделей (очистит БД и создаст все модели, указанные в импорте)
 ```shell
 python create_tables.py
