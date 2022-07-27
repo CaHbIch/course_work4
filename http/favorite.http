@@ -1,0 +1,8 @@
+POST http://127.0.0.1:25000/favorites/movies/
+Content-Type: application/json
+Authorization: Bearer JWT_token
+
+{
+  "user_id": "1",
+  "movie_id": "1"
+}

@@ -21,6 +21,7 @@ def generate_password_hash(password: str) -> str:
 
 
 def compare_passwords(hash_user: Union[str, bytes], input_password: str):
+    """ Проверка пароля из request, пароля в БД """
     return hmac.compare_digest(
         base64.b64decode(hash_user),
         hashlib.pbkdf2_hmac(

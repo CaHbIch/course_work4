@@ -25,7 +25,7 @@ class UsersDAO(BaseDAO[User]):
             self._db_session.rollback()
             return False
 
-    def update(self, kwargs: dict):
+    def update(self, kwargs):
         """ Обновляет данные пользователя """
         try:
             self._db_session.add(kwargs)
