@@ -19,8 +19,17 @@ class UserView(Resource):
         uid = decode_token(token)["id"]
         return user_service.get_item(uid), 200
 
+    @auth_required
+    def patch(self):
+        """Обновления профиля пользователя."""
+        token = request.headers["Authorization"].split("Bearer ")[-1]
+        uid = decode_token(token)["id"]
+        data = request.get_json()
+        user_service.update_part(data, uid)
+        return "", 204
 
-@api.route('/login/')
+
+@api.route('/password/')
 class AuthLogin(Resource):
     def post(self):
         """Авторизация пользователя"""
@@ -35,8 +44,3 @@ class AuthLogin(Resource):
         else:
             return "Ошибка в запросе", 400
 
-    def put(self):
-        """Обновления Аутентификации пользователя."""
-        req_json = request.json
-        token = req_json.get("refresh_token")
-        return auth_service.approve_refresf_token(token), 201

@@ -21,7 +21,8 @@ flask run --port=25000
 ```shell
 set FLASK_APP=run.py
 set FLASK_ENV=development
-flask run
+flask run --port=25000
+
 ```
 
 ### PowerShell (Windows)

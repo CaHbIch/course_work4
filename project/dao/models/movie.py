@@ -9,16 +9,16 @@ from project.setup.db import models
 
 
 class Movie(models.Base):
-    __tablename__ = 'movies'
+    __tablename__ = 'movie'
 
     title = Column(String(255))
     description = Column(String(255))
     trailer = Column(String(255))
     year = Column(Integer)
     rating = Column(Float)
-    genre_id = Column(Integer, ForeignKey("genres.id"))
+    genre_id = Column(Integer, ForeignKey("genre.id"))
     genre = relationship("Genre")
-    director_id = Column(Integer, ForeignKey("directors.id"))
+    director_id = Column(Integer, ForeignKey("director.id"))
     director = relationship("Director")
 
 

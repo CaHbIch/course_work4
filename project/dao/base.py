@@ -33,14 +33,9 @@ class BaseDAO(Generic[T]):
             self._db_session.rollback()
             return False
 
-    def update(self, kwargs: dict):
-        """ Обновляет данные пользователя """
-        try:
-            self._db_session.query(self.__model__.id).update(kwargs)
-            self._db_session.commit()
-        except Exception as e:
-            print(f"Не удалось обновить пользователя\n{e}")
-            self._db_session.rollback()
+    def update(self, user):
+        self._db_session.add(user)
+        self._db_session.commit()
 
     @property
     def _items_per_page(self) -> int:

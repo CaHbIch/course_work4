@@ -6,13 +6,13 @@ from project.setup.db import models
 
 
 class User(models.Base):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     email = Column(String(20), unique=True, nullable=False)
     name = Column(String(20))
     surname = Column(String(20))
     password = Column(String(10), nullable=False)
-    favorite_genre = Column(String(200), ForeignKey("genres.id"))
+    favorite_genre = Column(String(200), ForeignKey("genre.id"))
     genre = relationship("Genre")
 
 
