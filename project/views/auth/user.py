@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Namespace, Resource
-from project.container import user_service, auth_service
+from project.container import user_service
 from project.setup.api.models import user
 from project.tools.security import decode_token, auth_required
 
@@ -21,8 +21,19 @@ class UserView(Resource):
 
     def patch(self):
         """ Update user info """
-        data = request.json
         token = request.headers["Authorization"].split("Bearer ")[-1]
-        return user_service.update_user(data=data, refresh_token=token), 201
+        access_token = decode_token(token)["id"]
+        data = request.get_json()
+        user_service.update_user(data, access_token)
+        return "", 204
 
 
+@api.route("/password/")
+class UserView(Resource):
+
+    def put(self):
+        token = request.headers["Authorization"].split("Bearer ")[-1]
+        access_token = decode_token(token)["id"]
+        data = request.json
+        user_service.update(data, access_token)
+        return "", 204
