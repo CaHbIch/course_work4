@@ -17,13 +17,13 @@ class Movie(models.Base):
     year = Column(Integer)
     rating = Column(Float)
     genre_id = Column(Integer, ForeignKey("genres.id"))
-    genre = relationship("Genre")
     director_id = Column(Integer, ForeignKey("directors.id"))
+
+    genre = relationship("Genre")
     director = relationship("Director")
 
 
 class MovieSchema(Schema):
-
     title = fields.Str()
     description = fields.Str()
     trailer = fields.Str()
@@ -31,5 +31,5 @@ class MovieSchema(Schema):
     rating = fields.Float()
     genre_id = fields.Int()
     director_id = fields.Int()
-    genre = fields.Pluck(GenreSchema, 'name')
-    director = fields.Pluck(DirectorSchema, 'name')
+    genre = fields.Nested(GenreSchema)
+    director = fields.Nested(DirectorSchema)

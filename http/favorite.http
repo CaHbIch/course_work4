@@ -1,8 +1,9 @@
 POST http://127.0.0.1:25000/favorites/movies/
+Accept: application/json
 Content-Type: application/json
-Authorization: Bearer JWT_token
+Authorization: Bearer jWT_token
 
 {
-  "user_id": "1",
-  "movie_id": "1"
+  "user_id": 1,
+  "movie_id": 1
 }
