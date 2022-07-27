@@ -4,8 +4,8 @@ from flask import current_app
 
 from project.dao import UsersDAO
 from project.dao.models.user import User
-from project.exceptions import ItemNotFound
-from project.tools.security import generate_password_hash, decode_token
+from project.exceptions import ItemNotFound, InvalidPasswordUsage
+from project.tools.security import generate_password_hash, compare_passwords
 
 
 class UsersService:
@@ -31,9 +31,14 @@ class UsersService:
         data["password"] = generate_password_hash(data.get("password"))
         return self.dao.create(**data)
 
-    def update(self, data: dict):
-        data["password"] = generate_password_hash(data.get("password"))
-        return self.dao.update(data)
+    def update(self, data, access_token):
+        if user := self.get_item(access_token):
+            if compare_passwords(user.password, data["old_password"]):
+                new_password = generate_password_hash(data["new_password"])
+                user.password = new_password
+                self.dao.update(user)
+            else:
+                raise InvalidPasswordUsage(f'Invalid password {data["old_password"]}')
 
     def update_user(self, data, access_token):
         if user := self.get_item(access_token):
