@@ -3,7 +3,7 @@ from typing import Optional
 from project.dao.base import BaseDAO
 from project.dao.models.user import User
 from project.exceptions import ItemNotFound
-from project.tools.security import generate_password_hash
+from project.tools.security import generate_password_hash, decode_token
 
 
 class UsersService:
@@ -28,3 +28,16 @@ class UsersService:
     def update(self, data: dict):
         data["password"] = generate_password_hash(data.get("password"))
         return self.dao.update(data)
+
+
+    def get_by_token(self, refresh_token):
+        data = decode_token(refresh_token)
+
+        if data:
+            return self.dao.get_user_by_email(data.get('email'))
+
+    def update_user(self, data, refresh_token):
+        user = self.get_by_token(refresh_token)
+
+        if user:
+            self.dao.update(user)
