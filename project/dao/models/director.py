@@ -5,7 +5,7 @@ from project.setup.db import models
 
 
 class Director(models.Base):
-    __tablename__ = 'directors'
+    __tablename__ = 'director'
 
     name = Column(String(100), unique=True, nullable=False)
 

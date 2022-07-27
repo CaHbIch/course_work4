@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields
-from sqlalchemy import Column, String, ForeignKey, Integer
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from project.setup.db import models
@@ -12,7 +12,7 @@ class User(models.Base):
     name = Column(String(20))
     surname = Column(String(20))
     password = Column(String(10), nullable=False)
-    favorite_genre = Column(Integer(), ForeignKey("genres.id"))
+    favorite_genre = Column(String(200), ForeignKey("genres.id"))
     genre = relationship("Genre")
 
 
@@ -21,4 +21,4 @@ class UserSchema(Schema):
     name = fields.Str()
     surname = fields.Str()
     password = fields.Str()
-    favorite_genre = fields.Int()
+    favorite_genre = fields.Str()

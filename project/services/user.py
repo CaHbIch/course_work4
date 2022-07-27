@@ -1,20 +1,14 @@
 from typing import Optional
 
-from flask import current_app
-
-from project.dao import UsersDAO
+from project.dao.base import BaseDAO
 from project.dao.models.user import User
-from project.exceptions import ItemNotFound, InvalidPasswordUsage
-from project.tools.security import generate_password_hash, compare_passwords
+from project.exceptions import ItemNotFound
+from project.tools.security import generate_password_hash
 
 
 class UsersService:
-    def __init__(self, dao: UsersDAO) -> None:
+    def __init__(self, dao: BaseDAO) -> None:
         self.dao = dao
-
-    @property
-    def _items_per_page(self) -> int:
-        return current_app.config['ITEMS_PER_PAGE']
 
     def get_item(self, pk: int) -> User:
         if user := self.dao.get_by_id(pk):
@@ -31,21 +25,6 @@ class UsersService:
         data["password"] = generate_password_hash(data.get("password"))
         return self.dao.create(**data)
 
-    def update(self, data, access_token):
-        if user := self.get_item(access_token):
-            if compare_passwords(user.password, data["old_password"]):
-                new_password = generate_password_hash(data["new_password"])
-                user.password = new_password
-                self.dao.update(user)
-            else:
-                raise InvalidPasswordUsage(f'Invalid password {data["old_password"]}')
-
-    def update_user(self, data, access_token):
-        if user := self.get_item(access_token):
-            if 'name' in data:
-                user.name = data['name']
-            if 'surname' in data:
-                user.surname = data['surname']
-            if 'favourite_genre' in data:
-                user.favorite_genre = data['favourite_genre']
-            self.dao.update(user)
+    def update(self, data: dict):
+        data["password"] = generate_password_hash(data.get("password"))
+        return self.dao.update(data)
