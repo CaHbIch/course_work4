@@ -11,5 +11,4 @@ class Genre(models.Base):
 
 
 class GenreSchema(Schema):
-
     name = fields.Str()

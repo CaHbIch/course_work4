@@ -25,10 +25,10 @@ class UsersDAO(BaseDAO[User]):
             self._db_session.rollback()
             return False
 
-    def update(self, kwargs):
+    def update(self, *kwargs):
         """ Обновляет данные пользователя """
         try:
-            self._db_session.add(kwargs)
+            self._db_session.add(*kwargs)
             self._db_session.commit()
         except Exception as e:
             print(f"Не удалось обновить пользователя\n{e}")

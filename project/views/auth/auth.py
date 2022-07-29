@@ -9,7 +9,7 @@ api = Namespace('auth')
 @api.route("/register/")
 class AuthView(Resource):
     def post(self):
-        """Авторизация пользователя"""
+        """Регистрация пользователя"""
         req_json = request.json
         user_service.create(req_json)
         return "", 201
@@ -18,7 +18,7 @@ class AuthView(Resource):
 @api.route('/login/')
 class AuthView(Resource):
     def post(self):
-        """Авторизация пользователя"""
+        """Идентификация пользователя"""
         req_json = request.json
         email = req_json.get('email')
         password = req_json.get('password')
@@ -29,9 +29,3 @@ class AuthView(Resource):
             return tokens, 201
         else:
             return "Ошибка в запросе", 400
-
-    def patch(self):
-        """Обновления Аутентификации пользователя."""
-        req_json = request.json
-        token = req_json.get("refresh_token")
-        return auth_service.approve_refresf_token(token), 201
