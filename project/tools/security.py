@@ -40,7 +40,7 @@ def decode_token(token: str):
             jwt=token,
             key=current_app.config["SECRET_KEY"],
             algorithms=current_app.config["ALGORITM"]
-            )
+        )
     except Exception:
         abort(401)
     return decoded_token
@@ -61,3 +61,4 @@ def auth_required(func):
         return func(*args, **kwargs)
 
     return wrapper
+

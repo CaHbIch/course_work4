@@ -8,3 +8,7 @@ class ItemNotFound(BaseServiceError):
 
 class InvalidPasswordUsage(BaseServiceError):
     status_code = 500
+
+
+class ItemAlreadyExists(Exception):
+    status_code = 400
