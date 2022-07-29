@@ -35,7 +35,7 @@ class AuthLogin(Resource):
         else:
             return "Ошибка в запросе", 400
 
-    def put(self):
+    def PATCH(self):
         """Обновления Аутентификации пользователя."""
         req_json = request.json
         token = req_json.get("refresh_token")

@@ -2,8 +2,8 @@ from typing import Optional
 
 from project.dao.base import BaseDAO
 from project.dao.models.user import User
-from project.exceptions import ItemNotFound
-from project.tools.security import generate_password_hash
+from project.exceptions import ItemNotFound, InvalidPasswordUsage
+from project.tools.security import generate_password_hash, compare_passwords
 
 
 class UsersService:
@@ -19,12 +19,17 @@ class UsersService:
         return self.dao.get_all(page=page, status=status)
 
     def get_user_by_email(self, email: str) -> User:
-        return self.dao.get_user_by_email(email)
+        return self.get_user_by_email(email)
 
     def create(self, data):
         data["password"] = generate_password_hash(data.get("password"))
-        return self.dao.create(**data)
+        return self.create(**data)
 
-    def update(self, data: dict):
-        data["password"] = generate_password_hash(data.get("password"))
-        return self.dao.update(data)
+    def update(self, data, access_token):
+        if user := self.get_item(access_token):
+            if compare_passwords(user.password, data["old_password"]):
+                new_password = generate_password_hash(data["new_password"])
+                user.password = new_password
+                self.update(user, access_token)
+            else:
+                raise InvalidPasswordUsage(f'Invalid password {data["old_password"]}')
