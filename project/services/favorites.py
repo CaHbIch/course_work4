@@ -1,22 +1,18 @@
 from project.dao import FavoritesDAO
-from project.exceptions import ItemAlreadyExists
+from project.dao.models.movie import Movie
+from project.exceptions import ItemNotFound
 
 
 class FavoriteService:
     def __init__(self, dao: FavoritesDAO) -> None:
         self.dao = dao
 
-    def add_favourite(self, user_id, movie_id) -> None:
-        """
-        Добавить фильм в избранное пользователя
-        :raises: ItemAlreadyExists: если фильм уже в избранном
-        """
+    def get_item(self, pk: int) -> Movie:
+        if movie := self.dao.get_by_id(pk):
+            return movie
+        raise ItemNotFound(f'Movie with pk={pk} not exists.')
 
-        data = {
-            'user_id': user_id,
-            'movie_id': movie_id
-        }
-        if self.dao.get_favorite(user_id, movie_id):
-            raise ItemAlreadyExists
+    def add_favorite(self, movie_d, access_token):
+        if favorite := self.get_item(access_token):
+            return self.dao.update(favorite, movie_d)
 
-        self.dao.get_all(data)
