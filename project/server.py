@@ -16,6 +16,7 @@ def create_app(config_obj):
     app.config.from_object(config_obj)
     print(app.url_map)
 
+
     @app.route('/')
     def index():
         return render_template('index.html')
@@ -31,6 +32,7 @@ def create_app(config_obj):
     api.add_namespace(movies_ns)
     api.add_namespace(directors_ns)
     api.add_namespace(favorite_ns)
+
 
     app.register_error_handler(BaseServiceError, base_service_error_handler)
 

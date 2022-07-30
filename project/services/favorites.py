@@ -1,18 +1,40 @@
+from typing import List
+
 from project.dao import FavoritesDAO
-from project.dao.models.movie import Movie
-from project.exceptions import ItemNotFound
+from project.dao.models.favorite import Favorite
+from project.exceptions import ItemAlreadyExists, ItemNotFound
 
 
 class FavoriteService:
     def __init__(self, dao: FavoritesDAO) -> None:
         self.dao = dao
 
-    def get_item(self, pk: int) -> Movie:
-        if movie := self.dao.get_by_id(pk):
-            return movie
-        raise ItemNotFound(f'Movie with pk={pk} not exists.')
+    def add_favourite(self, user_id, movie_id) -> object:
+        """ Добавить фильм в избранное пользователя
+        :raises ItemAlreadyExists: если фильм уже в избранном"""
+        data = {
+            'user_id': user_id,
+            'movie_id': movie_id
+        }
+        if self.dao.get_favorite(user_id, movie_id):
+            raise ItemAlreadyExists
 
-    def add_favorite(self, movie_d, access_token):
-        if favorite := self.get_item(access_token):
-            return self.dao.update(favorite, movie_d)
+        return self.dao.create(data)
 
+    def get_user_favorites(self) -> List[Favorite]:
+        """ Получает все избранное пользователя"""
+        favourites = self.dao.get_user_favorites()
+        return favourites
+
+
+    def delete_favourite(self, user_id, movie_id) -> None:
+        """
+        Удалить фильм из избранного пользователя
+        :raises ItemNotFound: Если фильм не в избранном
+        """
+        favourite = self.dao.get_favorite(user_id, movie_id)
+        if not favourite:
+            raise ItemNotFound
+
+        uid = favourite[0].id
+        self.dao.delete(uid)

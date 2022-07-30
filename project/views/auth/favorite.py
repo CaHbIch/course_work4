@@ -1,33 +1,40 @@
 from flask import request
 from flask_restx import Namespace, Resource
 
-from project.container import user_service, auth_service, movie_service, favorite_service
+from project.container import movie_service, user_service, favorite_service, favorite_dao
 from project.dao.models.movie import MovieSchema
-from project.tools.security import decode_token
+from project.tools.security import decode_token, auth_required
 
 api = Namespace('favorites')
 
 
 @api.route('/movies/')
 class FavouritesViews(Resource):
+    @api.doc(description='Избранное пользователя')
+    @api.response(200, 'Добавлено')
+    @api.response(404, 'Нет такого фильма')
     def get(self):
-        """
-         Получает информацию, что добавлено в избранное
-        """
-        token = request.headers["Authorization"].split("Bearer ")[-1]
-        uid = decode_token(token)["id"]
-        return favorite_service.get_item(uid), 200
+        rs = favorite_service.get_user_favorites()
+        res = MovieSchema(many=True).dump(rs)
+        return res, 200
 
 
 @api.route('/movies/<int:movie_id>/')
-class FavoritesView(Resource):
+class FavouriteView(Resource):
     def post(self, movie_id):
-        """Добавить фильм к пользователю в Избранное."""
-        # передаем токен пользователя
+        # Передаем токен пользователя
         token = request.headers["Authorization"].split("Bearer ")[-1]
         access_token = decode_token(token)["id"]
-        # Получаем фильм по ID
-        movie_d = movie_service.get_item(movie_id)
-        # Передаем фильм и токен
-        favorite_service.add_favorite(movie_d, access_token)
-        return "", 204
+
+        # Добавляем фильм в избранное
+        favorite_service.add_favourite(access_token, movie_id)
+        return "", 200
+
+    def delete(self, movie_id):
+        # Передаем токен пользователя
+        token = request.headers["Authorization"].split("Bearer ")[-1]
+        access_token = decode_token(token)["id"]
+
+        # Удаляем из избранного
+        favorite_service.delete_favourite(access_token, movie_id)
+        return "", 200
