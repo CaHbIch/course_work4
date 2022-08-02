@@ -14,7 +14,6 @@ def base_service_error_handler(exception: BaseServiceError):
 def create_app(config_obj):
     app = Flask(__name__)
     app.config.from_object(config_obj)
-    print(app.url_map)
 
 
     @app.route('/')

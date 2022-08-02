@@ -1,5 +1,7 @@
 from typing import List
 
+from flask_restx import abort
+
 from project.dao import FavoritesDAO
 from project.dao.models.favorite import Favorite
 from project.exceptions import ItemAlreadyExists, ItemNotFound
@@ -26,15 +28,11 @@ class FavoriteService:
         favourites = self.dao.get_user_favorites()
         return favourites
 
-
-    def delete_favourite(self, user_id, movie_id) -> None:
-        """
-        Удалить фильм из избранного пользователя
-        :raises ItemNotFound: Если фильм не в избранном
-        """
+    def delete_favourite(self, user_id, movie_id):
+        """ Удаляет все фильмы из избранного """
         favourite = self.dao.get_favorite(user_id, movie_id)
-        if not favourite:
-            raise ItemNotFound
 
-        uid = favourite[0].id
-        self.dao.delete(uid)
+        if not favourite:
+            abort(404)
+
+        self.dao.delete(favourite[0].id)

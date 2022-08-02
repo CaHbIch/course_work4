@@ -1,7 +1,6 @@
 import calendar
 import datetime
 import jwt
-from flask import current_app
 from flask_restx import abort
 
 from project.config import BaseConfig
@@ -54,13 +53,3 @@ class AuthService:
             abort(401, "Нет такого пользователя")
         return self.generate_tokens(user.email, user.password, is_refresh=True)
 
-    def get_email_from_token(self, token: str) -> str:
-        """
-        Get email from token
-        :raise InvalidToken: if no valid token passed
-        """
-        data = jwt.decode(token,
-                          current_app.config.get('SECRET_KEY'),
-                          algorithms=[current_app.config.get('ALGORITM')])
-        email = data.get('email')
-        return email
